@@ -131,6 +131,17 @@ $router->get('/hello', function() use ($name) {
 });
 ```
 
+## Set a 404 page not found
+
+To set a 404 page not found, use the page404() method:
+
+```php
+$router->page404(function() {
+    return '404.php';
+});
+```
+
+
 ## License
 
 The Router PHP package is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
