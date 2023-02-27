@@ -1,34 +1,75 @@
 <?php 
 
+/**
+ * @author      Pierre <pierrenoel@hotmail.be>
+ * @copyright   Copyright (c), 2023 Pierre
+ * @license     MIT public license
+ */
+
 namespace Pierre\Router;
 
 class Router
 {    
+    /**
+     * @var array $routes An array of routes.
+     */
     protected $routes = [];
+
+    /**
+     * @var string $uri The request URI.
+     */
     protected $uri;
+
+    /**
+     * @var string $uri The request URI.
+     */
     protected $method;
 
+     /**
+     * Initializes a new instance of the Router class.
+     */
     public function __construct()
     {		
         $this->uri = parse_url($_SERVER['REQUEST_URI'])['path'];
         $this->method = $_POST['_method'] ?? $_SERVER['REQUEST_METHOD'];
     }
 
+    /**
+     * Adds a GET route.
+     *
+     * @param string $uri The URI of the route.
+     * @param object|null $callable The callable function of the route.
+     */
     public function get(string $uri, object $callable = null)
     {
         $this->add('GET',$uri,$callable);
     }
 
+    /**
+     * Adds a POST route.
+     *
+     * @param string $uri The URI of the route.
+     * @param object|null $callable The callable function of the route.
+     */
     public function post(string $uri,object $callable = null)
     {
         $this->add('POST',$uri,$callable);
     }
 
+    /**
+     * Adds a DELETE route.
+     *
+     * @param string $uri The URI of the route.
+     * @param object|null $callable The callable function of the route.
+     */
     public function delete(string $uri,object $callable = null) 
     {
         return $this->add('DELETE',$uri,$callable);
     }
 
+    /**
+     * Runs the router.
+    */
     public function run() : void
     {
         foreach ($this->routes as $route) {
@@ -46,6 +87,15 @@ class Router
         $this->abort();
     }
 
+    /**
+     * Adds a new route.
+     *
+     * @param string $method The HTTP method of the route.
+     * @param string $uri The URI of the route.
+     * @param object|null $callable The callable function of the route.
+     *
+     * @return array The newly added route.
+     */
     private function add(string $method, string $uri, object $callable = null) : array
     {
         return $this->routes[$uri] = [
@@ -55,7 +105,12 @@ class Router
         ];
     }
 
-    protected function abort(Response $code = Response::NOT_FOUND) : void
+    /**
+     * Aborts the request.
+     *
+     * @param int $code The HTTP status code to return.
+     */
+    protected function abort($code = Response::NOT_FOUND) : void
     {
         http_response_code($code);
         echo 'Page not found';   
