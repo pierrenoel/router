@@ -13,18 +13,23 @@ class Router
     /**
      * @var array $routes An array of routes.
      */
-    protected $routes = [];
+    protected array $routes = [];
 
     /**
      * @var string $uri The request URI.
      */
-    protected $uri;
+    protected string $uri;
 
     /**
      * @var string $uri The request URI.
      */
-    protected $method;
+    protected string $method;
 
+    /**
+     * @var string $page404 to set the required file
+     */
+    protected string $page404;
+     
      /**
      * Initializes a new instance of the Router class.
      */
@@ -38,9 +43,9 @@ class Router
      * Adds a GET route.
      *
      * @param string $uri The URI of the route.
-     * @param object|null $callable The callable function of the route.
+     * @param object $callable The callable function of the route.
      */
-    public function get(string $uri, object $callable = null)
+    public function get(string $uri, object $callable)
     {
         $this->add('GET',$uri,$callable);
     }
@@ -49,9 +54,9 @@ class Router
      * Adds a POST route.
      *
      * @param string $uri The URI of the route.
-     * @param object|null $callable The callable function of the route.
+     * @param object $callable The callable function of the route.
      */
-    public function post(string $uri,object $callable = null)
+    public function post(string $uri,object $callable)
     {
         $this->add('POST',$uri,$callable);
     }
@@ -60,9 +65,9 @@ class Router
      * Adds a DELETE route.
      *
      * @param string $uri The URI of the route.
-     * @param object|null $callable The callable function of the route.
+     * @param object $callable The callable function of the route.
      */
-    public function delete(string $uri,object $callable = null) 
+    public function delete(string $uri,object $callable) 
     {
         return $this->add('DELETE',$uri,$callable);
     }
@@ -84,7 +89,7 @@ class Router
             }
         }
 
-        $this->abort();
+        $this->page404 ? $this->abort(Response::NOT_FOUND,$this->page404) : $this->abort(); 
     }
 
     /**
@@ -96,7 +101,7 @@ class Router
      *
      * @return array The newly added route.
      */
-    private function add(string $method, string $uri, object $callable = null) : array
+    private function add(string $method, string $uri, object $callable) : array
     {
         return $this->routes[$uri] = [
             'uri' => $uri,
@@ -110,10 +115,18 @@ class Router
      *
      * @param int $code The HTTP status code to return.
      */
-    protected function abort($code = Response::NOT_FOUND) : void
+    protected function abort($code = Response::NOT_FOUND, string $file = null) : void
     {
         http_response_code($code);
-        echo 'Page not found';   
+        
+        if($file) require $file;
+        else echo 'Page not found';
+
         die();
+    }
+
+    public function page404(object $callable)
+    {
+        $this->page404 = $callable();
     }
 }
