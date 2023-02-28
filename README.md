@@ -17,9 +17,7 @@ The Router PHP package requires PHP 7.0 or higher.
 
 -   Define routes for GET, POST, DELETE, and PUT HTTP methods
 -   Define routes with parameters
--   Define routes with optional parameters
--   Define routes with regular expressions
-
+  
 ## Installation
 
 To use the Router PHP package, you need to install it via Composer. Run the following command in your project directory:
@@ -130,17 +128,6 @@ $router->get('/hello', function() use ($name) {
     return "Hello {$name}!}";
 });
 ```
-
-## Set a 404 page not found
-
-To set a 404 page not found, use the page404() method:
-
-```php
-$router->page404(function() {
-    return '404.php';
-});
-```
-
 
 ## License
 

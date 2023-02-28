@@ -25,11 +25,6 @@ class Router
      */
     protected string $method;
 
-    /**
-     * @var string $page404 to set the required file
-     */
-    protected string $page404;
-     
      /**
      * Initializes a new instance of the Router class.
      */
@@ -89,7 +84,7 @@ class Router
             }
         }
 
-        $this->page404 ? $this->abort(Response::NOT_FOUND,$this->page404) : $this->abort(); 
+        $this->abort();
     }
 
     /**
@@ -115,18 +110,11 @@ class Router
      *
      * @param int $code The HTTP status code to return.
      */
-    protected function abort($code = Response::NOT_FOUND, string $file = null) : void
+    protected function abort($code = Response::NOT_FOUND)
     {
         http_response_code($code);
-        
-        if($file) require $file;
-        else echo 'Page not found';
-
+        echo 'Page not found';
         die();
     }
 
-    public function page404(object $callable)
-    {
-        $this->page404 = $callable();
-    }
 }
